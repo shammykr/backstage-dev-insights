@@ -3,6 +3,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
+import { HealthReportGenerator } from './service/HealthReportGenerator';
 import { MetricsCollector } from './service/MetricsCollector';
 
 /**
@@ -25,7 +26,8 @@ export const devInsightsPlugin = createBackendPlugin({
           logger,
           cache,
         });
-        httpRouter.use(await createRouter({ logger, collector }));
+        const reports = new HealthReportGenerator(config, logger);
+        httpRouter.use(await createRouter({ logger, collector, reports }));
         httpRouter.addAuthPolicy({ path: '/health', allow: 'unauthenticated' });
       },
     });

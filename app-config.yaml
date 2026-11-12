@@ -1,0 +1,39 @@
+# Config for running the plugins standalone (npm run start:backend / start:frontend).
+# In a real Backstage app, copy the `devInsights` block into your app-config.yaml.
+app:
+  title: Dev Insights (dev)
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, POST]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+devInsights:
+  github:
+    token: ${GITHUB_TOKEN}
+    # apiBaseUrl: https://github.example.com/api/v3   # GitHub Enterprise Server
+  # Every org/repo listed here is collected; `team` groups them on the dashboard.
+  targets:
+    - org: backstage
+      team: backstage-maintainers
+      maxRepos: 3
+    - repo: octokit/octokit.js
+      team: sdk
+    - repo: vercel/next.js
+      team: web
+  deployWorkflowPattern: 'deploy|release|publish'
+  defaultWindowDays: 7
+  cacheTtlMinutes: 15
+  llm:
+    baseUrl: https://api.openai.com/v1
+    # Leave unset to get a deterministic stub report instead of calling an LLM.
+    apiKey: ${LLM_API_KEY}
+    model: gpt-4o-mini

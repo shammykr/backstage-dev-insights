@@ -6,6 +6,7 @@ import { devInsightsApiRef, MetricsQuery } from '../../api';
 import {
   BuildTimesWidget,
   DeploymentFrequencyWidget,
+  HealthReportWidget,
   PrCycleTimeWidget,
   SummaryWidget,
 } from '../widgets';
@@ -15,13 +16,15 @@ export type WidgetId =
   | 'summary'
   | 'buildTimes'
   | 'deploymentFrequency'
-  | 'prCycleTime';
+  | 'prCycleTime'
+  | 'healthReport';
 
 export const ALL_WIDGETS: { id: WidgetId; label: string }[] = [
   { id: 'summary', label: 'Summary' },
   { id: 'buildTimes', label: 'Build times' },
   { id: 'deploymentFrequency', label: 'Deployment frequency' },
   { id: 'prCycleTime', label: 'PR cycle time' },
+  { id: 'healthReport', label: 'Health report' },
 ];
 
 export const Dashboard = (props: {
@@ -60,6 +63,11 @@ export const Dashboard = (props: {
       {show('prCycleTime') && (
         <Grid item xs={12}>
           <PrCycleTimeWidget repos={value.repos} />
+        </Grid>
+      )}
+      {show('healthReport') && (
+        <Grid item xs={12}>
+          <HealthReportWidget query={props.query} />
         </Grid>
       )}
     </Grid>

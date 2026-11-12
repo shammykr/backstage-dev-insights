@@ -3,6 +3,7 @@ import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { z } from 'zod';
+import { HealthReportGenerator } from './service/HealthReportGenerator';
 import { MetricsCollector } from './service/MetricsCollector';
 
 const csv = z
@@ -16,11 +17,18 @@ const metricsQuery = z.object({
   teams: csv,
 });
 
+const summaryBody = z.object({
+  days: z.number().int().min(1).max(90).optional(),
+  repos: z.array(z.string()).optional(),
+  teams: z.array(z.string()).optional(),
+});
+
 export async function createRouter(options: {
   logger: LoggerService;
   collector: MetricsCollector;
+  reports: HealthReportGenerator;
 }): Promise<express.Router> {
-  const { collector } = options;
+  const { collector, reports } = options;
   const router = Router();
   router.use(express.json());
 
@@ -38,6 +46,14 @@ export async function createRouter(options: {
     const parsed = metricsQuery.safeParse(req.query);
     if (!parsed.success) throw new InputError(parsed.error.message);
     res.json(await collector.getMetrics(parsed.data));
+  });
+
+  /** LLM-generated team health report for the given window / scope. */
+  router.post('/summary', async (req, res) => {
+    const parsed = summaryBody.safeParse(req.body ?? {});
+    if (!parsed.success) throw new InputError(parsed.error.message);
+    const metrics = await collector.getMetrics(parsed.data);
+    res.json(await reports.generate(metrics));
   });
 
   return router;

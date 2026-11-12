@@ -11,3 +11,4 @@ export type {
   DailyPoint,
   Target,
 } from './service/types';
+export type { HealthReport } from './service/HealthReportGenerator';

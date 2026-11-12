@@ -71,8 +71,9 @@ export function computeMetrics(
       successRate: completed.length
         ? Math.round((succeeded.length / completed.length) * 1000) / 10
         : null,
+      // Only runs that actually executed; skipped/cancelled runs would drag the median to ~0.
       durationMinutes: distribution(
-        completed
+        [...succeeded, ...failed]
           .map(r => r.durationMinutes)
           .filter((m): m is number => m !== null),
       ),
