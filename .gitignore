@@ -1,0 +1,7 @@
+node_modules/
+dist/
+dist-types/
+*.tsbuildinfo
+.env
+app-config.local.yaml
+.DS_Store

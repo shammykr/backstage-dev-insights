@@ -1,0 +1,24 @@
+{
+  "name": "backstage-dev-insights",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backstage.io plugins for developer productivity metrics with LLM-powered team health summaries",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "plugins/*"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "lint": "backstage-cli repo lint",
+    "build": "backstage-cli repo build",
+    "start:backend": "npm --workspace @internal/plugin-dev-insights-backend run start",
+    "start:frontend": "npm --workspace @internal/plugin-dev-insights run start"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.36.7",
+    "@backstage/cli-defaults": "^0.1.7",
+    "typescript": "~5.8.0"
+  }
+}
