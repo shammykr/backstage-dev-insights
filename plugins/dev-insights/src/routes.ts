@@ -1,3 +1,3 @@
-import { createRouteRef } from '@backstage/frontend-plugin-api';
+import { createRouteRef } from '@backstage/core-plugin-api';
 
-export const rootRouteRef = createRouteRef();
+export const rootRouteRef = createRouteRef({ id: 'dev-insights' });

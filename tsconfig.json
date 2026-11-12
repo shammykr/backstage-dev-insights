@@ -21,6 +21,7 @@
     "types": [
       "node",
       "webpack-env"
-    ]
+    ],
+    "jsx": "react-jsx"
   }
 }

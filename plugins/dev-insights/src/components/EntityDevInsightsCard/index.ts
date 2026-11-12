@@ -1,0 +1,1 @@
+export { EntityDevInsightsCard } from './EntityDevInsightsCard';
