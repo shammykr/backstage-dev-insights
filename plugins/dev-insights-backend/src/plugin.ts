@@ -3,10 +3,10 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { todoListServiceRef } from './services/TodoListService';
+import { MetricsCollector } from './service/MetricsCollector';
 
 /**
- * devInsightsPlugin backend plugin
+ * Dev Insights backend plugin. Mounted at /api/dev-insights.
  *
  * @public
  */
@@ -15,17 +15,18 @@ export const devInsightsPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        httpAuth: coreServices.httpAuth,
+        config: coreServices.rootConfig,
+        logger: coreServices.logger,
+        cache: coreServices.cache,
         httpRouter: coreServices.httpRouter,
-        todoList: todoListServiceRef,
       },
-      async init({ httpAuth, httpRouter, todoList }) {
-        httpRouter.use(
-          await createRouter({
-            httpAuth,
-            todoList,
-          }),
-        );
+      async init({ config, logger, cache, httpRouter }) {
+        const collector = MetricsCollector.fromConfig(config, {
+          logger,
+          cache,
+        });
+        httpRouter.use(await createRouter({ logger, collector }));
+        httpRouter.addAuthPolicy({ path: '/health', allow: 'unauthenticated' });
       },
     });
   },
